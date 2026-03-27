@@ -1,0 +1,9 @@
+{
+  "name": "Aura: AI Digital Twin Student",
+  "description": "An advanced AI-powered educational system that builds a digital model of each student, analyzes learning behavior, predicts performance, and provides personalized revision strategies.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
