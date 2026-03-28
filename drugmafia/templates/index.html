@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Predictor AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Drug <span class="highlight">Analysis</span></h1>
+            <p class="subtitle">Enter patient metrics for AI prediction</p>
+            
+            <form id="predictionForm">
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="age" required min="1" max="110" placeholder="e.g. 45">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <select id="sex">
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Na to K Ratio</label>
+                        <input type="number" step="0.001" id="na_to_k" required placeholder="e.g. 15.0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Blood Pressure (BP)</label>
+                    <select id="bp">
+                        <option value="HIGH">HIGH</option>
+                        <option value="NORMAL">NORMAL</option>
+                        <option value="LOW">LOW</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Cholesterol</label>
+                    <select id="cholesterol">
+                        <option value="HIGH">HIGH</option>
+                        <option value="NORMAL">NORMAL</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="submitBtn">Generate Prescription AI</button>
+            </form>
+
+            <div id="resultContainer" class="result-container hidden">
+                <p>Recommended Medication:</p>
+                <div id="drugResult" class="drug-badge"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerText = "Processing AI...";
+            
+            const data = {
+                age: document.getElementById('age').value,
+                sex: document.getElementById('sex').value,
+                na_to_k: document.getElementById('na_to_k').value,
+                bp: document.getElementById('bp').value,
+                cholesterol: document.getElementById('cholesterol').value
+            };
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            
+            if(result.drug) {
+                document.getElementById('resultContainer').classList.remove('hidden');
+                document.getElementById('drugResult').innerText = result.drug;
+            }
+            submitBtn.innerText = "Generate Prescription AI";
+        });
+    </script>
+</body>
+</html>
